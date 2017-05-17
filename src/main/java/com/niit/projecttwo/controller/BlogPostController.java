@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.niit.projecttwo.dao.BlogDao;
+import com.niit.projecttwo.model.BlogComment;
 import com.niit.projecttwo.model.BlogPost;
 import com.niit.projecttwo.model.Error;
 import com.niit.projecttwo.model.User;
@@ -69,5 +70,41 @@ public class BlogPostController {
 	    	BlogPost blogPost = blogDao.getBlogPostById(id);
 	    	return new ResponseEntity<BlogPost>(blogPost,HttpStatus.OK);
 	    }
+	}
+	
+	@RequestMapping(value="/addcomment",method=RequestMethod.POST)
+	public ResponseEntity<?> addBlogComment(@RequestBody BlogComment blogComment,HttpSession session){
+		User user = (User)session.getAttribute("user");
+		if(user == null){
+	    	Error error = new Error(3,"Unauthorized user, please login");
+	    	return new ResponseEntity<Error>(error,HttpStatus.UNAUTHORIZED);
+	    }
+		blogComment.setCommentedBy(user);
+		blogComment.setCommentedOn(new Date());
+		blogDao.addBlogComment(blogComment);
+		return new ResponseEntity<Void>(HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/getblogcomments/{blogPostId}",method=RequestMethod.GET)
+	public ResponseEntity<?> blogComments(@PathVariable int blogPostId,HttpSession session){
+		User user = (User)session.getAttribute("user");
+		if(user == null){
+	    	Error error = new Error(3,"Unauthorized user, please login");
+	    	return new ResponseEntity<Error>(error,HttpStatus.UNAUTHORIZED);
+	    }
+		List<BlogComment> blogComments = blogDao.getBlogComments(blogPostId);
+		System.out.println(blogComments);
+		return new ResponseEntity<List<BlogComment>>(blogComments,HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/updateapproval",method=RequestMethod.PUT)
+	public ResponseEntity<?> updateApproval(@RequestBody BlogPost blogPost,HttpSession session){
+		User user = (User)session.getAttribute("user");
+		if(user == null){
+	    	Error error = new Error(3,"Unauthorized user, please login");
+	    	return new ResponseEntity<Error>(error,HttpStatus.UNAUTHORIZED);
+	    }
+		blogDao.update(blogPost);
+		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 }

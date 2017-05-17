@@ -1,6 +1,8 @@
 package com.niit.projecttwo.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,7 +14,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
@@ -33,6 +38,17 @@ public class BlogPost {
 	@Lob
 	@Column(name="blog_body")
 	private String body;
+	
+	@OneToMany(mappedBy="blogPost",fetch=FetchType.EAGER,cascade=CascadeType.ALL)
+	@JsonIgnore
+	private List<BlogComment> blogComments = new ArrayList<BlogComment>();
+	
+	public List<BlogComment> getBlogComments() {
+		return blogComments;
+	}
+	public void setBlogComments(List<BlogComment> blogComments) {
+		this.blogComments = blogComments;
+	}
 	
 	private boolean approved;
 	

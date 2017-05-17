@@ -37,6 +37,7 @@ public class JobController {
 				if(role.equals("Admin")){
 					job.setPostedon(new Date());
 					job.setActive(true);
+					
 					jobDao.saveJobDetails(job);
 					return new ResponseEntity<Void>(HttpStatus.OK);
 				}
