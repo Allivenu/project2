@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 @Entity
 @Table(name="userstable")
 public class User {
@@ -18,8 +20,11 @@ public class User {
 	
 	@Column(unique=true, nullable = false)
 	private String username;
+	@NotEmpty(message = "product name is mandatory")
 	private String password;
+	@NotEmpty(message = "product name is mandatory")
 	private String firstname;
+	@NotEmpty(message = "product name is mandatory")
 	private String lastname;
 	
 	@Column(unique=true, nullable = false)
